@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Small website with bootstrap and jquery</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btn").click(function(){
+                var usrname = $('#usr').val();
+                $.ajax({
+                type: 'GET',
+                url: `https://api.github.com/users/${usrname}/repos`,
+                success: function (repos) {
+                    // Clear the table body before populating it with new data
+                    $('#tabbody').empty();
+                    repos.forEach(function (repo) {
+                        var row = `
+                            <tr>
+                                <td><a href="${repo.html_url}" target="_blank">${repo.name}</a></td>
+                                <td>${repo.description || 'No description'}</td>
+                                <td>${repo.stargazers_count}</td>
+                            </tr>`;
+                        $('#tabbody').append(row);
+                    });
+                },
+                error: function () {
+                    alert("Error fetching data. Please ensure the username is correct.");
+                }
+            });
+        });
+    });
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+    <h2>Welcome to the small website created with Bootstrap and JQuery</h2>
+    <p>Write a github username and it will show the repositories of the selected user.</p>
+    <div class="form-group">
+        <label for="usr">Username:</label>
+        <input type="text" class="form-control" id="usr" placeholder="Ej: blaucamarasa">
+        <span class="help-block"> Introduce the github username.</span>
+    </div>
+    <button id="btn" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
+    <p>         </p>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Name of the repository</th>
+            <th>Description</th>
+            <th>Stargazers</th>
+        </tr>
+        </thead>
+        <tbody id="tabbody">
+
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
